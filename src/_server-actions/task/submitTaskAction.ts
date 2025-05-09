@@ -52,10 +52,11 @@ export const submitTaskAction = async (task: Task, checklists: Checklist[]) => {
         isFavorite: isFavorite,
         userId: user.id,
         checklists: {
-          create: checklists.map((checklist) => ({
+          create: checklists.map((checklist,index) => ({
             title: checklist.title,
             description: checklist.description ?? "",
             completed: checklist.completed,
+            order: index,
           })),
         },
       },

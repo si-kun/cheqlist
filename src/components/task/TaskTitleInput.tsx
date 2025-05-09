@@ -1,31 +1,21 @@
-import { Task } from "@/type";
+import { useMemoForm } from "@/hooks/useMemoForm";
+import { useTaskForm } from "@/hooks/useTaskForm";
 import React from "react";
 
-interface TaskTitleInputProps {
-  formTask: Task;
-  setFormTask: React.Dispatch<React.SetStateAction<Task>>;
-  setSelectedItem: React.Dispatch<
-    React.SetStateAction<{
-      type: "task" | "checklist";
-      id: string;
-    }>
-  >;
-}
 
-const TaskTitleInput = ({
-  formTask,
-  setFormTask,
-  setSelectedItem,
-}: TaskTitleInputProps) => {
+const TaskTitleInput = ({ isMemo }: { isMemo: boolean }) => {
+  const { setFormTask, setSelectedItem, formTask } = useTaskForm();
+  const { setFormMemo, formMemo, handleClickMemoTitle } = useMemoForm()
+
   return (
     <input
       className="w-full p-2 rounded-md border-2 border-gray-300"
       type="text"
       name="task"
-      placeholder="タスクタイトルを入力"
-      value={formTask.title}
-      onChange={(e) => setFormTask({ ...formTask, title: e.target.value })}
-      onClick={() => setSelectedItem({ type: "task", id: formTask.id })}
+      placeholder={isMemo ? "メモタイトルを入力" : "タスクタイトルを入力"}
+      value={isMemo ? formMemo.title : formTask.title}
+      onChange={(e) => isMemo ? setFormMemo({ ...formMemo, title: e.target.value }) : setFormTask({ ...formTask, title: e.target.value })}
+      onClick={isMemo ? handleClickMemoTitle : () => setSelectedItem({ type: "task", id: formTask.id })}
     />
   );
 };

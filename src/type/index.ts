@@ -13,6 +13,7 @@ export interface Checklist {
   title: string;
   description: string | null;
   completed: boolean;
+  order?: number;
 }
 
 export interface ChecklistUpdate extends Checklist {
@@ -24,3 +25,18 @@ export interface TaskWithChecklists extends Task {
   updatedAt: Date;
 }
 
+export interface Memo {
+    id         : string;
+    title      : string;
+    content    : string;
+    childMemos : ChildMemo[];
+    userId     : string;
+}
+
+export interface ChildMemo {
+  id: string;
+  title: string;
+  content: string;
+  order: number;
+  memoId: string;
+}

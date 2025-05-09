@@ -42,16 +42,29 @@ model Checklist {
   completed   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  order       Int?
   taskId      String
   task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
 
 model Memo {
+  id         String      @id @default(uuid())
+  title      String
+  content    String
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  childMemos ChildMemo[]
+  userId     String
+  user       User        @relation(fields: [userId], references: [id])
+}
+
+model ChildMemo {
   id        String   @id @default(uuid())
   title     String
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  order     Int?
+  memoId    String
+  memo      Memo     @relation(fields: [memoId], references: [id])
 }

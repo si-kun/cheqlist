@@ -1,19 +1,13 @@
-import { Task } from "@/type";
+import { useTaskForm } from "@/hooks/useTaskForm";
 import React from "react";
 import "react-datepicker/dist/react-datepicker.css";
 
 interface TaskDatePickerProps {
-  formTask: Task;
-  setTask: React.Dispatch<React.SetStateAction<Task>>;
   dateType: "startDate" | "endDate";
-  isDateNull: boolean;
 }
 
 const TaskDatePicker = ({
-  formTask,
-  setTask,
   dateType,
-  isDateNull,
 }: TaskDatePickerProps) => {
   const formatDate = (date: Date | null) => {
     if (!date || !(date instanceof Date)) return "";
@@ -28,15 +22,17 @@ const TaskDatePicker = ({
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
+  const { isDateNull, formTask, setFormTask } = useTaskForm();
+
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === "") {
-      setTask((prev) => ({
+      setFormTask((prev) => ({
         ...prev,
         [dateType]: null,
       }));
     } else {
       const date = new Date(e.target.value);
-      setTask((prev) => ({
+      setFormTask((prev) => ({
         ...prev,
         [dateType]: date,
       }));
