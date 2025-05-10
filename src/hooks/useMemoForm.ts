@@ -1,5 +1,5 @@
-import { isMemoAtom, memoAtom, selectedMemoItemAtom } from "@/atoms/taskAtom";
-import { useAtom } from "jotai";
+import { deleteListIdsAtom, isMemoAtom, memoAtom, selectedMemoItemAtom } from "@/atoms/taskAtom";
+import { useAtom, useSetAtom } from "jotai";
 import { useEffect} from "react";
 import { createEmptyMemo } from "@/lib/task/createEmptyTask";
 import { ChildMemo, Memo } from "@/type";
@@ -13,6 +13,7 @@ export const useMemoForm = (initialMemo?: Memo) => {
   const [formMemo, setFormMemo] = useAtom(memoAtom);
   const [isMemo, setIsMemo] = useAtom(isMemoAtom);
   const [selectedMemoItem, setSelectedMemoItem] = useAtom(selectedMemoItemAtom)
+  const setDeleteChildMemoIds = useSetAtom(deleteListIdsAtom)
 
   const handleClickMemoTitle = (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -36,11 +37,8 @@ export const useMemoForm = (initialMemo?: Memo) => {
     if (initialMemo) {
       setFormMemo(initialMemo);
       setIsMemo(true);
-    } else {
-      setFormMemo(createEmptyMemo());
-      setIsMemo(false);
-    }
-  }, [initialMemo]);
+    } 
+  }, [initialMemo, setFormMemo, setIsMemo]);
 
   // メモ追加の関数
   const handleAddMemo = () => {
@@ -91,16 +89,24 @@ export const useMemoForm = (initialMemo?: Memo) => {
     });
   };
 
-  const handleDeleteMemo = (id: string) => {
+  const handleDeleteMemo = (id: string, isEdit = false) => {
     setFormMemo((prev) => {
       if(!prev) return createEmptyMemo();
-      return {
-        ...prev,
-        childMemos: prev.childMemos.filter((item) => item.id !== id),
-      }
 
-    })
-  }
+      if(isEdit) {
+        setDeleteChildMemoIds((prev) => [...prev, id]);
+        return {
+          ...prev,
+          childMemos: prev.childMemos.filter((item) => item.id !== id),
+        };
+      } else {
+        return {
+          ...prev,
+          childMemos: prev.childMemos.filter((item) => item.id !== id),
+        };
+      }
+    });
+  };
 
   const handleClickMemoSubmit = async (
     e: React.MouseEvent<HTMLButtonElement>

@@ -10,7 +10,6 @@ const TaskBodyForm = () => {
     selectedItem,
     handleAddChecklist,
     handleChangeDesc,
-    getSelectedDescription,
   } = useTaskForm();
 
   const {isMemo,handleAddMemo,handleChangeMemo} = useMemoForm()
@@ -38,7 +37,6 @@ const TaskBodyForm = () => {
       {/* メモ、コンテンツ */}
       <TaskDescriptionEditor
         selectedItem={selectedItem}
-        getSelectedDescription={getSelectedDescription}
         handleChangeDesc={handleChangeDesc}
       />
     </div>

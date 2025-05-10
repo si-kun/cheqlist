@@ -2,10 +2,11 @@ import React from "react";
 import { Checklist, ChildMemo } from "@/type";
 import { FiCheckSquare, MdOutlineSquare } from "@/react-icon";
 import DeleteCheckButton from "../ui/button/DeleteCheckButton";
-import { useAtomValue } from "jotai";
-import { checklistsAtom, memoAtom } from "@/atoms/taskAtom";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { checklistsAtom, deleteListIdsAtom, memoAtom } from "@/atoms/taskAtom";
 import { useTaskForm } from "@/hooks/useTaskForm";
 import { useMemoForm } from "@/hooks/useMemoForm";
+import { usePathname } from "next/navigation";
 
 // Checklistかどうかを判定する型ガード関数
 function isChecklist(list: Checklist | ChildMemo): list is Checklist {
@@ -26,12 +27,32 @@ const ChecklistArea = ({
   handleChangeMemo,
   isMemo = false,
 }: ChecklistAreaProps) => {
+  const pathname = usePathname();
+  const isEdit = pathname.includes("edit");
   const formMemo = useAtomValue(memoAtom);
-  const checklists = useAtomValue(checklistsAtom);
+  const [checklists, setChecklists] = useAtom(checklistsAtom);
+  const deleteListIds = useSetAtom(deleteListIdsAtom);
 
-  const { handleChangeChecklist, setSelectedItem, handleDeleteChecklist } =
-    useTaskForm();
+  const { handleChangeChecklist, setSelectedItem, } = useTaskForm();
   const { setSelectedMemoItem, handleDeleteMemo } = useMemoForm();
+
+  const handleDeleteChildMemo = (id: string) => {
+    if (isMemo && isEdit) {
+      handleDeleteMemo(id);
+      deleteListIds((prev) => [...prev, id]);
+    } else {
+      handleDeleteMemo(id);
+    }
+  };
+
+  const handleDeleteChecklist = (id: string) => {
+    if(!isMemo && isEdit) {
+      setChecklists((prev) => prev.filter((c) => c.id !== id))
+      deleteListIds((prev) => [...prev, id])
+    } else {
+      setChecklists((prev) => prev.filter((c) => c.id !== id))
+    }
+  }
 
   return (
     <ul className="flex flex-col flex-1 h-full gap-4 overflow-y-auto">
@@ -77,7 +98,7 @@ const ChecklistArea = ({
           <DeleteCheckButton
             onClick={
               isMemo
-                ? () => handleDeleteMemo(list.id)
+                ? () => handleDeleteChildMemo(list.id)
                 : () => handleDeleteChecklist(list.id)
             }
           />

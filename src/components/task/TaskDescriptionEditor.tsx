@@ -1,31 +1,33 @@
 import React from "react";
 import Editor from "../MarkdownEditor/Editor";
 import { useAtomValue } from "jotai";
-import { checklistsAtom } from "@/atoms/taskAtom";
+import { checklistsAtom, memoAtom } from "@/atoms/taskAtom";
 import { useMemoForm } from "@/hooks/useMemoForm";
+import { useTaskForm } from "@/hooks/useTaskForm";
 
 interface TaskDescriptionEditorProps {
   selectedItem: {
     type: "task" | "checklist";
     id: string;
   };
-  getSelectedDescription: () => string;
   handleChangeDesc: (value: string) => void;
 }
 
 const TaskDescriptionEditor = ({
   selectedItem,
-  getSelectedDescription,
   handleChangeDesc,
 }: TaskDescriptionEditorProps) => {
   const handleEditorChange = (markdown: string) => {
     handleChangeDesc(markdown);
   };
 
+  const formMemo = useAtomValue(memoAtom);
+
+  const { getSelectedDescription } = useTaskForm();
+
   const {
     isMemo,
     selectedMemoItem,
-    formMemo,
     getSelectedMemoContent,
     handleChangeContent,
   } = useMemoForm();

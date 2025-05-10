@@ -4,66 +4,75 @@ import { prisma } from "@/lib/prismaClient";
 import { Checklist, Task } from "@/type";
 
 export const updateTask = async (
-  taskId: string,
   task: Task,
   checklists: Checklist[],
   deleteChecklists: string[]
 ) => {
   try {
-    const { title, description, completed, startDate, endDate, isFavorite } =
-      task;
 
-    const updateTask = await prisma.task.update({
-      where: {
-        id: taskId,
-      },
-      data: {
-        title,
-        description,
-        completed,
-        startDate,
-        endDate,
-        isFavorite,
-      },
-    });
+    const deleteIds = deleteChecklists ?? []
 
-    await Promise.all(
-      checklists.map((c) => {
-       return prisma.checklist.upsert({
-          where: {
-            id: c.id,
-          },
-          create: {
-            id: c.id,
-            title: c.title,
-            description: c.description,
-            completed: c.completed,
-            taskId: taskId,
-          },
-          update: {
-            title: c.title,
-            description: c.description,
-            completed: c.completed,
-          },
-        });
-      })
-    );
-
-    if (deleteChecklists.length > 0) {
+    if(deleteIds.length > 0) {
       await prisma.checklist.deleteMany({
         where: {
           id: {
-            in: deleteChecklists,
+            in: deleteIds
           }
         }
       })
     }
 
+    const result = await prisma.task.update({
+      where: {
+        id: task.id
+      },
+      data: {
+        title: task.title,
+        description: task.description,
+        startDate: task.startDate,
+        endDate: task.endDate,
+        isFavorite: task.isFavorite,
+        checklists: {
+          upsert: checklists.map((c,index) =>
+            c.id
+              ? {
+                  where: {
+                    id: c.id,
+                  },
+                  update: {
+                    title: c.title,
+                    description: c.description,
+                    completed: c.completed,
+                    order: index,
+                  },
+                  create: {
+                    title: c.title,
+                    description: c.description,
+                    completed: c.completed,
+                    order: index,
+                  },
+                }
+              : {
+                  where: { id: crypto.randomUUID() },
+                  update: {},
+                  create: {
+                    title: c.title,
+                    description: c.description,
+                    completed: c.completed,
+                    order: index,
+                  }
+                }
+          )
+        }
+      }
+    })
+
+
     return {
       success: true,
       message: "タスクの更新に成功しました",
-      updateTask,
-    };
+      updateTask: result,
+    }
   } catch (error) {
     return {
       success: false,

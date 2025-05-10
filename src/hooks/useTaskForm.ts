@@ -1,5 +1,4 @@
 import { checklistsAtom, selectedItemAtom, taskAtom } from "@/atoms/taskAtom";
-import { createEmptyTask } from "@/lib/task/createEmptyTask";
 import { updateTask } from "@/_server-actions/task/updateTask";
 import { submitTaskAction } from "@/_server-actions/task/submitTaskAction";
 import { Checklist, TaskWithChecklists } from "@/type";
@@ -20,16 +19,12 @@ export const useTaskForm = (initialTask?: TaskWithChecklists) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (initialTask) {
+    if (initialTask?.title) {
       setFormTask(initialTask);
-      setChecklists(initialTask.checklists);
-      setIsMemo(false);
-    } else {
-      setFormTask(createEmptyTask());
-      setChecklists([]);
+      setChecklists(initialTask.checklists ?? []);
       setIsMemo(false);
     }
-  }, [initialTask]);
+  }, [initialTask, setFormTask, setChecklists, setIsMemo]);
 
   // 削除されたチェックリストのIDを保存する配列
   const [deleteChecklists, setDeleteChecklists] = useState<string[]>([]);
@@ -133,7 +128,6 @@ export const useTaskForm = (initialTask?: TaskWithChecklists) => {
 
     if (initialTask) {
       const result = await updateTask(
-        initialTask.id,
         formTask,
         sendChecklists,
         deleteChecklists

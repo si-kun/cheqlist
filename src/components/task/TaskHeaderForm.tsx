@@ -67,7 +67,7 @@ const TaskHeaderForm = () => {
               <MdFavoriteBorder />
             )}
           </button>
-          <TaskTitleInput isMemo={isMemo} />
+          <TaskTitleInput />
         </div>
       </div>
 

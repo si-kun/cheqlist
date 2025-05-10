@@ -13,3 +13,5 @@ export const selectedItemAtom = atom<{type: "task" | "checklist", id: string}>({
 export const memoAtom = atom<Memo>(createEmptyMemo())
 export const isMemoAtom = atom<boolean>(false)
 export const selectedMemoItemAtom = atom<{type: "memo" | "childMemo", id: string}>({type: "memo", id: ""})
+
+export const deleteListIdsAtom = atom<string[]>([])

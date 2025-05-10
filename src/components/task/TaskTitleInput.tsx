@@ -1,10 +1,13 @@
+import { taskAtom } from "@/atoms/taskAtom";
 import { useMemoForm } from "@/hooks/useMemoForm";
 import { useTaskForm } from "@/hooks/useTaskForm";
+import { useAtom } from "jotai";
 import React from "react";
 
-const TaskTitleInput = ({ isMemo }: { isMemo: boolean }) => {
-  const { setFormTask, setSelectedItem, formTask } = useTaskForm();
-  const { setFormMemo, formMemo, handleClickMemoTitle } = useMemoForm();
+const TaskTitleInput = () => {
+  const [formTask, setFormTask] = useAtom(taskAtom);
+  const { setSelectedItem } = useTaskForm();
+  const { setFormMemo, formMemo, handleClickMemoTitle, isMemo } = useMemoForm();
 
   return (
     <input
