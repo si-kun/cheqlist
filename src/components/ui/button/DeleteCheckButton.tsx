@@ -2,16 +2,15 @@ import React from "react";
 import { FaDeleteLeft } from "@/react-icon";
 
 interface DeleteCheckButtonProps {
-  handleDeleteChecklist: (id: string) => void;
-  checklistId: string;
+  onClick: () => void;
 }
 
-const DeleteCheckButton = ({ handleDeleteChecklist, checklistId, }: DeleteCheckButtonProps) => {
+const DeleteCheckButton = ({ onClick}: DeleteCheckButtonProps) => {
   return (
     <button
       type="button"
       className="text-2xl cursor-pointer"
-      onClick={() => handleDeleteChecklist(checklistId)}
+      onClick={() => onClick()}
     >
       <FaDeleteLeft />
     </button>

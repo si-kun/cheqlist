@@ -9,8 +9,13 @@ import TaskTitleInput from "./TaskTitleInput";
 import TaskDatePicker from "./TaskDatePicker";
 import { useTaskForm } from "@/hooks/useTaskForm";
 import { useMemoForm } from "@/hooks/useMemoForm";
+import { usePathname } from "next/navigation";
 
 const TaskHeaderForm = () => {
+
+  const pathname = usePathname()
+  const isEdit = pathname.includes("edit")
+
   const { formTask } = useTaskForm();
 
   const { handleFavorite, handleDateNull, isDateNull} =
@@ -23,10 +28,11 @@ const TaskHeaderForm = () => {
       {/* Task Input */}
       <div className="flex flex-col gap-2 w-full">
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            className="flex items-center"
-            onClick={() => setIsMemo(false)}
+            <button
+              type="button"
+              className="flex items-center"
+              onClick={() => setIsMemo(false)}
+              disabled={isEdit}
           >
             {isMemo ? (
               <MdOutlineSquare className="text-2xl" />
@@ -35,10 +41,11 @@ const TaskHeaderForm = () => {
             )}
             チェックリスト
           </button>
-          <button
-            type="button"
-            className="flex items-center"
+            <button
+              type="button"
+              className={`flex items-center`}
             onClick={() => setIsMemo(true)}
+            disabled={isEdit}
           >
             {isMemo ? (
               <MdOutlineCheckBox className="text-2xl" />

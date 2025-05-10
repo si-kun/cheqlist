@@ -73,7 +73,7 @@ const MarkdownViewer = ({ content }: { content?: string | null }) => {
       rehypePlugins={[rehypeRaw]}
       components={components}
     >
-      {content ?? ""}
+      {content ?? "詳細がありません"}
     </ReactMarkdown>
   );
 };

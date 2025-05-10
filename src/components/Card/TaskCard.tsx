@@ -12,7 +12,7 @@ const TaskCard = ({ task }: TaskCardProps) => {
   return (
     <li
       key={task.id}
-      className="bg-amber-200 p-4 rounded-md flex flex-col gap-4"
+      className="bg-amber-200 p-4 rounded-md flex flex-col gap-3"
     >
       <CardHeader task={task} />
       <CardProgressDesc task={task} />

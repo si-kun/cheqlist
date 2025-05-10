@@ -2,10 +2,9 @@ import { useMemoForm } from "@/hooks/useMemoForm";
 import { useTaskForm } from "@/hooks/useTaskForm";
 import React from "react";
 
-
 const TaskTitleInput = ({ isMemo }: { isMemo: boolean }) => {
   const { setFormTask, setSelectedItem, formTask } = useTaskForm();
-  const { setFormMemo, formMemo, handleClickMemoTitle } = useMemoForm()
+  const { setFormMemo, formMemo, handleClickMemoTitle } = useMemoForm();
 
   return (
     <input
@@ -14,8 +13,16 @@ const TaskTitleInput = ({ isMemo }: { isMemo: boolean }) => {
       name="task"
       placeholder={isMemo ? "メモタイトルを入力" : "タスクタイトルを入力"}
       value={isMemo ? formMemo.title : formTask.title}
-      onChange={(e) => isMemo ? setFormMemo({ ...formMemo, title: e.target.value }) : setFormTask({ ...formTask, title: e.target.value })}
-      onClick={isMemo ? handleClickMemoTitle : () => setSelectedItem({ type: "task", id: formTask.id })}
+      onChange={(e) =>
+        isMemo
+          ? setFormMemo({ ...formMemo, title: e.target.value })
+          : setFormTask({ ...formTask, title: e.target.value })
+      }
+      onClick={
+        isMemo
+          ? handleClickMemoTitle
+          : () => setSelectedItem({ type: "task", id: formTask.id })
+      }
     />
   );
 };

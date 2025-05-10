@@ -4,7 +4,7 @@ import { useEffect} from "react";
 import { createEmptyMemo } from "@/lib/task/createEmptyTask";
 import { ChildMemo, Memo } from "@/type";
 import { v4 as uuidv4 } from "uuid";
-import { submitMemoAction } from "@/_server-actions/task/submitMemoAction";
+import { submitMemoAction } from "@/_server-actions/memo/submitMemoAction";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
@@ -35,10 +35,12 @@ export const useMemoForm = (initialMemo?: Memo) => {
   useEffect(() => {
     if (initialMemo) {
       setFormMemo(initialMemo);
+      setIsMemo(true);
     } else {
       setFormMemo(createEmptyMemo());
+      setIsMemo(false);
     }
-  }, [initialMemo, setFormMemo]);
+  }, [initialMemo]);
 
   // メモ追加の関数
   const handleAddMemo = () => {
@@ -89,6 +91,17 @@ export const useMemoForm = (initialMemo?: Memo) => {
     });
   };
 
+  const handleDeleteMemo = (id: string) => {
+    setFormMemo((prev) => {
+      if(!prev) return createEmptyMemo();
+      return {
+        ...prev,
+        childMemos: prev.childMemos.filter((item) => item.id !== id),
+      }
+
+    })
+  }
+
   const handleClickMemoSubmit = async (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -131,5 +144,6 @@ export const useMemoForm = (initialMemo?: Memo) => {
     setSelectedMemoItem,
     getSelectedMemoContent,
     handleChangeContent,
+    handleDeleteMemo,
   };
 };

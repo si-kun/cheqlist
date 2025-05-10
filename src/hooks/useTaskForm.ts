@@ -2,27 +2,34 @@ import { checklistsAtom, selectedItemAtom, taskAtom } from "@/atoms/taskAtom";
 import { createEmptyTask } from "@/lib/task/createEmptyTask";
 import { updateTask } from "@/_server-actions/task/updateTask";
 import { submitTaskAction } from "@/_server-actions/task/submitTaskAction";
-import { Task, Checklist } from "@/type";
+import { Checklist, TaskWithChecklists } from "@/type";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useMemoForm } from "./useMemoForm";
 
-export const useTaskForm = (initialTask?: Task) => {
+export const useTaskForm = (initialTask?: TaskWithChecklists) => {
   const [formTask, setFormTask] = useAtom(taskAtom);
   const [checklists, setChecklists] = useAtom(checklistsAtom);
   const [selectedItem, setSelectedItem] = useAtom(selectedItemAtom);
+
+  const {setIsMemo} = useMemoForm();
 
   const router = useRouter();
 
   useEffect(() => {
     if (initialTask) {
       setFormTask(initialTask);
+      setChecklists(initialTask.checklists);
+      setIsMemo(false);
     } else {
       setFormTask(createEmptyTask());
+      setChecklists([]);
+      setIsMemo(false);
     }
-  }, [initialTask, setFormTask]);
+  }, [initialTask]);
 
   // 削除されたチェックリストのIDを保存する配列
   const [deleteChecklists, setDeleteChecklists] = useState<string[]>([]);

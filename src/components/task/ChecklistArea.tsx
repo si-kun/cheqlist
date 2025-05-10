@@ -31,25 +31,31 @@ const ChecklistArea = ({
 
   const { handleChangeChecklist, setSelectedItem, handleDeleteChecklist } =
     useTaskForm();
-  const { setSelectedMemoItem } = useMemoForm();
+  const { setSelectedMemoItem, handleDeleteMemo } = useMemoForm();
 
   return (
     <ul className="flex flex-col flex-1 h-full gap-4 overflow-y-auto">
       {(isMemo ? formMemo.childMemos : checklists).map((list) => (
         <li key={list.id} className="flex items-center gap-2">
-          {isMemo
-            ? <span className="font-bold">{list.order !== undefined ? list.order + 1 + "." : ""}</span>
-            : isChecklist(list) && (
-                <button
-                  type="button"
-                  onClick={() =>
-                    handleChangeChecklist(list.id, "completed", !list.completed)
-                  }
-                  className="text-2xl"
-                >
-                  {list.completed ? <FiCheckSquare /> : <MdOutlineSquare />}
-                </button>
-              )}
+          {isMemo ? (
+            <span className="font-bold">
+              {list.order !== null && list.order !== undefined
+                ? list.order + 1 + "."
+                : ""}
+            </span>
+          ) : (
+            isChecklist(list) && (
+              <button
+                type="button"
+                onClick={() =>
+                  handleChangeChecklist(list.id, "completed", !list.completed)
+                }
+                className="text-2xl"
+              >
+                {list.completed ? <FiCheckSquare /> : <MdOutlineSquare />}
+              </button>
+            )
+          )}
           <input
             type="text"
             value={list.title}
@@ -69,8 +75,11 @@ const ChecklistArea = ({
 
           {/* チェックリストを削除するボタン */}
           <DeleteCheckButton
-            handleDeleteChecklist={handleDeleteChecklist}
-            checklistId={list.id}
+            onClick={
+              isMemo
+                ? () => handleDeleteMemo(list.id)
+                : () => handleDeleteChecklist(list.id)
+            }
           />
         </li>
       ))}

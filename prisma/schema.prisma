@@ -55,7 +55,7 @@ model Memo {
   updatedAt  DateTime    @updatedAt
   childMemos ChildMemo[]
   userId     String
-  user       User        @relation(fields: [userId], references: [id])
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model ChildMemo {
@@ -66,5 +66,5 @@ model ChildMemo {
   updatedAt DateTime @updatedAt
   order     Int?
   memoId    String
-  memo      Memo     @relation(fields: [memoId], references: [id])
+  memo      Memo     @relation(fields: [memoId], references: [id], onDelete: Cascade)
 }

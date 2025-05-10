@@ -13,7 +13,7 @@ export interface Checklist {
   title: string;
   description: string | null;
   completed: boolean;
-  order?: number;
+  order?: number | null;
 }
 
 export interface ChecklistUpdate extends Checklist {
@@ -31,12 +31,13 @@ export interface Memo {
     content    : string;
     childMemos : ChildMemo[];
     userId     : string;
+    updatedAt?  : Date;
 }
 
 export interface ChildMemo {
   id: string;
   title: string;
   content: string;
-  order: number;
+  order: number | null;
   memoId: string;
 }
